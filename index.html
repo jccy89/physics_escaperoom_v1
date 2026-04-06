@@ -273,6 +273,10 @@ function checkAnswer1(){
     } else {
         feedback.innerHTML = "❌ Try again!";
         document.getElementById("wrongSound").play();
+
+        // Play crash sound too
+        document.getElementById("crashSound").play().catch(()=>{});
+
     }
 }
 
