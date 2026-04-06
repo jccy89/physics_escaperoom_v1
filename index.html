@@ -154,8 +154,8 @@ button:hover { background-color: #16a34a; }
 
     <!-- Question -->
     <h2>🚆 Level 1: Velocity</h2>
-    <p>A train travels 120 m in 5 s.</p>
-    <p><b>What is the velocity?</b></p>
+    <p>A steam train travels along the Trans-Siberian Railway heading west, covering <b>600 meters in 30 seconds</p>
+    <p><b>What is the train's velocity in m/s?</b></p>
 
     <input type="text" id="ans1"><br>
     <button onclick="checkAnswer1()">Submit</button>
@@ -176,7 +176,7 @@ button:hover { background-color: #16a34a; }
 
 <script>
 let playerName = "";
-let totalTime = 15; // 15 seconds
+let totalTime = 20; // 20 seconds
 let timerInterval;
 let bgm = document.getElementById("bgm");
 let musicOn = false;
@@ -266,7 +266,7 @@ function moveTrain(){
 function checkAnswer1(){
     let ans = document.getElementById("ans1").value;
     let feedback = document.getElementById("feedback");
-    let correct = "24";
+    let correct = "20";
 
     if(ans === correct){
         feedback.innerHTML = `✅ Correct! Next level unlocked, ${playerName}!`;
