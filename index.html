@@ -3,129 +3,130 @@
 <head>
     <title>Physics Escape Room - Level 1</title>
     <style>
-/* Background wallpaper */
-body::before {
-    content: "";
-    position: fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background: 
-        linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
-        url('wallpaper.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    z-index: -1;
-}
+        /* Background wallpaper */
+        body::before {
+            content: "";
+            position: fixed;
+            top:0; left:0;
+            width:100%; height:100%;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+                        url('wallpaper.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
+        }
 
-/* Layout */
-body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding-top: 40px;
-    color: white;
-    text-align: center;
-    font-family: Arial, sans-serif;
-}
+        /* Layout */
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 40px;
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
 
-/* Glass card */
-.container {
-    width: 60%;
-    max-width: 600px;
-    padding: 30px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-    position: relative;
-    z-index: 1;
-}
+        /* Glass card */
+        .container {
+            width: 60%;
+            max-width: 600px;
+            padding: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
 
-/* Score */
-#scoreDisplay {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-weight: bold;
-    color: #facc15;
-}
+        /* Score */
+        #scoreDisplay {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-weight: bold;
+            color: #facc15;
+        }
 
-/* Progress bar */
-.progress-bar {
-    width: 100%;
-    height: 10px;
-    background: #334155;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    overflow: hidden;
-}
-.progress-fill {
-    height: 100%;
-    background: #22c55e;
-    width: 25%;
-}
+        /* Progress bar */
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #334155;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #22c55e;
+            width: 25%;
+        }
 
-/* UI elements */
-h2 { margin-bottom: 20px; }
-input {
-    padding:12px;
-    font-size:16px;
-    border-radius:8px;
-    border:none;
-    width: 60%;
-}
-button {
-    padding:10px 20px;
-    margin:10px;
-    border-radius:8px;
-    border:none;
-    cursor:pointer;
-    background-color: #22c55e;
-    color: black;
-    font-weight: bold;
-}
-button:hover { background-color: #16a34a; }
-#timer { font-size:18px; margin-bottom:20px; color:#facc15; }
-.hint { color:#38bdf8; cursor:pointer; }
-#feedback { margin-top: 10px; }
+        /* UI elements */
+        h2 { margin-bottom: 20px; }
+        input {
+            padding:12px;
+            font-size:16px;
+            border-radius:8px;
+            border:none;
+            width: 60%;
+        }
+        button {
+            padding:10px 20px;
+            margin:10px;
+            border-radius:8px;
+            border:none;
+            cursor:pointer;
+            background-color: #22c55e;
+            color: black;
+            font-weight: bold;
+        }
+        button:hover { background-color: #16a34a; }
+        #timer { font-size:18px; margin-bottom:20px; color:#facc15; }
+        .hint { color:#38bdf8; cursor:pointer; }
+        #feedback { margin-top: 10px; }
 
-/* Train animation */
-#train {
-    position: absolute;
-    bottom: -40px;
-    width: 300px;
-    left: -320px;
-}
+        /* Train animation */
+        #train {
+            position: absolute;
+            bottom: -40px;
+            width: 300px;
+            left: -320px;
+        }
 
-/* Start Screen */
-#startScreen {
-    position: fixed;
-    top:0; left:0;
-    width:100%;
-    height:100%;
-    background: rgba(0,0,0,0.85);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    z-index: 10;
-}
-#startScreen input {
-    width: 200px;
-    margin-top: 10px;
-}
-#bgmToggle {
-    position: fixed;
-    top: 15px;
-    left: 20px;
-}
+        /* Start Screen */
+        #startScreen {
+            position: fixed;
+            top:0; left:0;
+            width:100%;
+            height:100%;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 10;
+        }
+        #startScreen input {
+            width: 200px;
+            margin-top: 10px;
+        }
+        #bgmToggle {
+            position: fixed;
+            top: 15px;
+            left: 20px;
+            z-index: 11;
+        }
     </style>
 </head>
+
 <body>
 
 <!-- Start Screen -->
@@ -136,7 +137,7 @@ button:hover { background-color: #16a34a; }
     <button onclick="startGame()">Start Game</button>
 </div>
 
-<!-- Background Music Toggle -->
+<!-- BGM Toggle -->
 <button id="bgmToggle" onclick="toggleBGM()">🎵 Music Off</button>
 
 <!-- Main Game Container -->
@@ -154,8 +155,8 @@ button:hover { background-color: #16a34a; }
 
     <!-- Question -->
     <h2>🚆 Level 1: Velocity</h2>
-    <p>A train travels 120 m in 5 s.</p>
-    <p><b>What is the velocity?</b></p>
+    <p>A steam train travels along the Trans-Siberian Railway heading west, covering <b>600 meters in 30 seconds</b></p>
+    <p><b>What is the train's velocity in m/s?</b></p>
 
     <input type="text" id="ans1"><br>
     <button onclick="checkAnswer1()">Submit</button>
@@ -167,37 +168,47 @@ button:hover { background-color: #16a34a; }
     <img id="train" src="train.png" alt="train">
 </div>
 
-<!-- Sounds -->
+<!-- Audio -->
+<audio id="startBgm" src="start_bgm.mp3" preload="auto" loop></audio>
+<audio id="gameBgm" src="bgm.mp3" preload="auto" loop></audio>
 <audio id="correctSound" src="correct.mp3" preload="auto"></audio>
 <audio id="wrongSound" src="wrong.mp3" preload="auto"></audio>
 <audio id="tickSound" src="tick.mp3" preload="auto"></audio>
-<audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
 <audio id="crashSound" src="crash.mp3" preload="auto"></audio>
 
 <script>
 let playerName = "";
-let totalTime = 15; // 15 seconds
+let totalTime = 30; // 30 seconds
 let timerInterval;
-let bgm = document.getElementById("bgm");
 let musicOn = false;
 
-// Start screen
+// Start screen BGM autoplay
+window.addEventListener('load', ()=>{
+    let startBgm = document.getElementById("startBgm");
+    startBgm.volume = 0.4;
+    startBgm.play().catch(()=>{ console.log("Autoplay blocked, waiting for user interaction"); });
+});
+
+// Start Game
 function startGame(){
     let nameInput = document.getElementById("playerName").value;
     if(nameInput.trim() === ""){
-        alert("Please enter your name to start!");
+        alert("Please enter your name!");
         return;
     }
     playerName = nameInput;
     document.getElementById("startScreen").style.display = "none";
 
-    // Unlock audio for browser
-    [document.getElementById("correctSound"), document.getElementById("wrongSound"), document.getElementById("tickSound")].forEach(s=>{
-        s.play().then(()=>{ s.pause(); s.currentTime=0; }).catch(()=>{});
-    });
+    // Stop start screen BGM
+    let startBgm = document.getElementById("startBgm");
+    startBgm.pause();
+    startBgm.currentTime = 0;
 
-    // Automatically start background music
-    bgm.play().catch(()=>{});
+    // Play game BGM
+    let gameBgm = document.getElementById("gameBgm");
+    gameBgm.volume = 0.4;
+    gameBgm.play().catch(()=>{});
+
     musicOn = true;
     document.getElementById("bgmToggle").innerText = "🎵 Music On";
 
@@ -205,14 +216,16 @@ function startGame(){
     moveTrain();
     updateScore();
 }
-// Background Music Toggle
+
+// Toggle BGM
 function toggleBGM(){
+    let gameBgm = document.getElementById("gameBgm");
     if(musicOn){
-        bgm.pause();
+        gameBgm.pause();
         musicOn = false;
         document.getElementById("bgmToggle").innerText = "🎵 Music Off";
     } else {
-        bgm.play().catch(()=>{ alert("⚠️ Click Start Game first to enable music!"); });
+        gameBgm.play().catch(()=>{ alert("⚠️ Click Start Game first to enable music!"); });
         musicOn = true;
         document.getElementById("bgmToggle").innerText = "🎵 Music On";
     }
@@ -224,22 +237,22 @@ function startTimer(){
     timerInterval = setInterval(()=>{
         timerEl.innerHTML = `⏳ Time Left: ${totalTime}s`;
 
-        // Tick sound last 5 seconds
+        // Tick sound last 5s
         if(totalTime <= 5 && totalTime > 0){
             document.getElementById("tickSound").play().catch(()=>{});
         }
 
         totalTime--;
-
-        // Time up
         if(totalTime < 0){
             clearInterval(timerInterval);
+
             document.getElementById("crashSound").play().catch(()=>{});
             alert("⏰ Time's up! The train has crashed!");
             location.reload();
         }
     },1000);
 }
+
 // Score
 if(!localStorage.score) localStorage.score = 0;
 function updateScore(){
@@ -258,21 +271,22 @@ function moveTrain(){
     animate();
 }
 
-// Answer checking
+// Check answer
 function checkAnswer1(){
     let ans = document.getElementById("ans1").value;
     let feedback = document.getElementById("feedback");
-    let correct = "24";
+    let correct = "20";
 
     if(ans === correct){
         feedback.innerHTML = `✅ Correct! Next level unlocked, ${playerName}!`;
         document.getElementById("correctSound").play();
         localStorage.score = parseInt(localStorage.score) + 10;
         updateScore();
-        setTimeout(()=>{ alert("Proceeding to next level..."); location.reload(); },1000);
+        setTimeout(()=>{ alert("Proceeding to next level..."); location.reload(); }, 1000);
     } else {
         feedback.innerHTML = "❌ Try again!";
         document.getElementById("wrongSound").play();
+        document.getElementById("crashSound").play().catch(()=>{});
     }
 }
 
