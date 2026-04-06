@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Physics Escape Room - Level 2</title>
+    <style>
+        body::before {
+            content: "";
+            position: fixed;
+            top:0; left:0;
+            width:100%; height:100%;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+                        url('wallpaper2.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 40px;
+            color: white;
+            text-align: center;
+            font-family: Arial;
+        }
+
+        .container {
+            width: 60%;
+            max-width: 600px;
+            padding: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        #scoreDisplay {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #facc15;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #334155;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 50%;
+            background: #22c55e;
+        }
+
+        input {
+            padding:10px;
+            border-radius:8px;
+            border:none;
+            width: 60%;
+        }
+
+        button {
+            padding:10px 20px;
+            margin:10px;
+            border:none;
+            border-radius:8px;
+            background:#22c55e;
+            font-weight:bold;
+            cursor:pointer;
+        }
+
+        button:hover { background:#16a34a; }
+
+        #timer { color:#facc15; margin-bottom:15px; }
+        .hint { color:#38bdf8; cursor:pointer; }
+
+        #train {
+            position: absolute;
+            bottom: -40px;
+            width: 280px;
+            left: -300px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div id="scoreDisplay">Score: 0</div>
+
+    <div class="progress-bar">
+        <div class="progress-fill"></div>
+    </div>
+    <p>Level 2 of 4</p>
+
+    <div id="timer"></div>
+
+    <h2>⚡ Level 2: Acceleration</h2>
+    <p>A train increases its velocity from <b>10 m/s to 30 m/s in 5 seconds</b>.</p>
+    <p><b>What is its acceleration (m/s²)?</b></p>
+
+    <input type="text" id="ans2"><br>
+    <button onclick="checkAnswer2()">Submit</button>
+
+    <p class="hint" onclick="showHint2()">💡 Need a hint?</p>
+    <p id="feedback"></p>
+
+    <img id="train" src="train.png">
+</div>
+
+<!-- Audio -->
+<audio id="gameBgm" src="bgm.mp3" loop></audio>
+<audio id="correctSound" src="correct.mp3"></audio>
+<audio id="wrongSound" src="wrong.mp3"></audio>
+<audio id="tickSound" src="tick.mp3"></audio>
+<audio id="crashSound" src="crash.mp3"></audio>
+
+<script>
+let totalTime = 25;
+let timerInterval;
+
+// Start BGM immediately
+window.onload = ()=>{
+    let bgm = document.getElementById("gameBgm");
+    bgm.volume = 0.4;
+    bgm.play().catch(()=>{});
+};
+
+// Timer
+function startTimer(){
+    let timerEl = document.getElementById("timer");
+
+    timerInterval = setInterval(()=>{
+        timerEl.innerHTML = `⏳ Time Left: ${totalTime}s`;
+
+        // Faster tension (last 7 seconds)
+        if(totalTime <= 7 && totalTime > 0){
+            document.getElementById("tickSound").play().catch(()=>{});
+        }
+
+        totalTime--;
+
+        if(totalTime < 0){
+            clearInterval(timerInterval);
+
+            document.getElementById("crashSound").play();
+            alert("💥 Time's up! The train couldn't handle the acceleration!");
+            location.reload();
+        }
+    },1000);
+}
+
+// Score
+if(!localStorage.score) localStorage.score = 0;
+function updateScore(){
+    document.getElementById("scoreDisplay").innerHTML = "Score: " + localStorage.score;
+}
+
+// Train animation (faster than Level 1)
+function moveTrain(){
+    let train = document.getElementById("train");
+    let pos = -300;
+
+    function animate(){
+        pos += 8;
+        train.style.left = pos + "px";
+
+        if(pos < window.innerWidth){
+            requestAnimationFrame(animate);
+        }
+    }
+    animate();
+}
+
+// Answer check
+function checkAnswer2(){
+    let ans = document.getElementById("ans2").value;
+    let feedback = document.getElementById("feedback");
+
+    if(ans === "4"){
+        feedback.innerHTML = "✅ Correct! The train accelerates safely!";
+        document.getElementById("correctSound").play();
+
+        localStorage.score = parseInt(localStorage.score) + 10;
+        updateScore();
+
+        setTimeout(()=>{
+            alert("🚆 Moving to Level 3...");
+            location.reload();
+        },1000);
+
+    } else {
+        feedback.innerHTML = "❌ Wrong! The train loses control!";
+        document.getElementById("wrongSound").play();
+        document.getElementById("crashSound").play();
+    }
+}
+
+// Hint
+function showHint2(){
+    alert("💡 Use a = (v - u) / t");
+}
+
+// Init
+startTimer();
+moveTrain();
+updateScore();
+</script>
+
+</body>
+</html>
