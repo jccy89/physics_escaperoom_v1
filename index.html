@@ -224,6 +224,8 @@ function startGame(){
         return;
     }
     playerName = nameInput;
+
+    localStorage.setItem("playerName", playerName);
     document.getElementById("startScreen").style.display = "none";
 
     // Stop start screen BGM
@@ -330,7 +332,8 @@ function showLevelComplete(nextLevel){
 
     screen.classList.add("show");
 
-    document.getElementById("levelUpSound").play().catch(()=>{});
+    let sound = document.getElementById("levelUpSound");
+    if(sound) sound.play().catch(()=>{});
 
     setTimeout(()=>{
         window.location.href = nextLevel;
