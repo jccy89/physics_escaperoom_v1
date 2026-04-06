@@ -224,18 +224,22 @@ function startTimer(){
     timerInterval = setInterval(()=>{
         timerEl.innerHTML = `⏳ Time Left: ${totalTime}s`;
 
-        // Tick sound last 5 seconds
+        // Optional: tick sound in last 5 seconds
         if(totalTime <= 5 && totalTime > 0){
             document.getElementById("tickSound").play().catch(()=>{});
         }
 
         totalTime--;
 
-        // Time up
         if(totalTime < 0){
             clearInterval(timerInterval);
+
+            // Play crash sound when time's up
             document.getElementById("crashSound").play().catch(()=>{});
+
             alert("⏰ Time's up! The train has crashed!");
+
+            // Optionally, reload the level
             location.reload();
         }
     },1000);
