@@ -102,6 +102,18 @@ button:hover { background-color: #16a34a; }
 }
 
 /* Start Screen */
+<!-- Start screen BGM -->
+<audio id="startBgm" src="start_bgm.mp3" preload="auto" loop autoplay></audio>
+
+// Optional: adjust volume on load
+window.addEventListener('load', ()=>{
+    let startBgm = document.getElementById("startBgm");
+    startBgm.volume = 0.4;
+    startBgm.play().catch((err)=>{
+        // Autoplay might be blocked; can show a message or play after first click
+        console.log("Autoplay blocked, waiting for user interaction");
+    });
+});
 #startScreen {
     position: fixed;
     top:0; left:0;
@@ -171,7 +183,7 @@ button:hover { background-color: #16a34a; }
 <audio id="correctSound" src="correct.mp3" preload="auto"></audio>
 <audio id="wrongSound" src="wrong.mp3" preload="auto"></audio>
 <audio id="tickSound" src="tick.mp3" preload="auto"></audio>
-<audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
+<audio id="gameBgm" src="bgm.mp3" loop preload="auto"></audio>
 <audio id="crashSound" src="crash.mp3" preload="auto"></audio>
 
 <script>
