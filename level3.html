@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Physics Escape Room - Level 3</title>
+    <style>
+        body::before {
+            content: "";
+            position: fixed;
+            top:0; left:0;
+            width:100%; height:100%;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+                        url('wallpaper3.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 40px;
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 60%;
+            max-width: 600px;
+            padding: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        #scoreDisplay {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #facc15;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #334155;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 75%;
+            background: #22c55e;
+        }
+
+        input {
+            padding:10px;
+            border-radius:8px;
+            border:none;
+            width: 60%;
+        }
+
+        button {
+            padding:10px 20px;
+            margin:10px;
+            border:none;
+            border-radius:8px;
+            background:#22c55e;
+            font-weight:bold;
+            cursor:pointer;
+        }
+
+        button:hover { background:#16a34a; }
+
+        #timer { color:#facc15; margin-bottom:15px; }
+        .hint { color:#38bdf8; cursor:pointer; }
+
+        #train {
+            position: absolute;
+            bottom: -60px; /* lower position than previous levels */
+            width: 260px;
+            left: -300px;
+        }
+
+        /* Level Complete Screen */
+        #levelCompleteScreen {
+            position: fixed;
+            top:0; left:0;
+            width:100%;
+            height:100%;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            z-index: 20;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        #levelCompleteScreen.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div id="scoreDisplay">Score: 0</div>
+
+    <div class="progress-bar">
+        <div class="progress-fill"></div>
+    </div>
+    <p>Level 3 of 4</p>
+
+    <div id="timer"></div>
+
+    <h2>🌊 Level 3: Force</h2>
+    <p>A 500 kg train is accelerating at <b>2 m/s²</b>. What is the net force on the train?</p>
+    <p><b>Provide the answer in Newtons (N)</b></p>
+
+    <input type="text" id="ans3"><br>
+    <button onclick="checkAnswer3()">Submit</button>
+
+    <p class="hint" onclick="showHint3()">💡 Need a hint?</p>
+    <p id="feedback"></p>
+
+    <img id="train" src="train.png" alt="train">
+</div>
+
+<!-- Level Complete Screen -->
+<div id="levelCompleteScreen">
+    <h1>🎉 Level Complete!</h1>
+    <p id="levelMessage"></p>
+</div>
+
+<!-- Audio -->
+<audio id="gameBgm" src="bgm.mp3" loop></audio>
+<audio id="correctSound" src="correct.mp3"></audio>
+<audio id="wrongSound" src="wrong.mp3"></audio>
+<audio id="tickSound" src="tick.mp3"></audio>
+<audio id="crashSound" src="crash.mp3"></audio>
+<audio id="levelUpSound" src="levelup.mp3"></audio>
+
+<script>
+let playerName = localStorage.getItem("playerName") || "Player";
+let totalTime = 30;
+let timerInterval;
+
+// Start BGM immediately
+window.onload = ()=>{
+    let bgm = document.getElementById("gameBgm");
+    bgm.volume = 0.4;
+    bgm.play().catch(()=>{});
+};
+
+// Timer
+function startTimer(){
+    let timerEl = document.getElementById("timer");
+
+    timerInterval = setInterval(()=>{
+        timerEl.innerHTML = `⏳ Time Left: ${totalTime}s`;
+
+        if(totalTime <= 7 && totalTime > 0){
+            document.getElementById("tickSound").play().catch(()=>{});
+        }
+
+        totalTime--;
+        if(totalTime < 0){
+            clearInterval(timerInterval);
+            document.getElementById("crashSound").play();
+            alert("💥 Time's up! The train couldn't handle the force!");
+            location.reload();
+        }
+    },1000);
+}
+
+// Score
+if(!localStorage.score) localStorage.score = 0;
+function updateScore(){
+    document.getElementById("scoreDisplay").innerHTML = "Score: " + localStorage.score;
+}
+
+// Train animation
+function moveTrain(){
+    let train = document.getElementById("train");
+    let pos = -300;
+    function animate(){
+        pos += 8;
+        train.style.left = pos + "px";
+        if(pos < window.innerWidth) requestAnimationFrame(animate);
+    }
+    animate();
+}
+
+// Check answer
+function checkAnswer3(){
+    let ans = document.getElementById("ans3").value.trim();
+    let feedback = document.getElementById("feedback");
+
+    if(ans === "1000"){  // 500 kg * 2 m/s²
+        feedback.innerHTML = "✅ Correct! The train accelerates with the right force!";
+        document.getElementById("correctSound").play();
+
+        localStorage.score = parseInt(localStorage.score) + 10;
+        updateScore();
+
+        // Show Level Complete screen and move to Level 4
+        showLevelComplete("level4.html");
+    } else {
+        feedback.innerHTML = "❌ Wrong! The train loses control!";
+        document.getElementById("wrongSound").play();
+        document.getElementById("crashSound").play();
+    }
+}
+
+// Show Level Complete Screen
+function showLevelComplete(nextLevel){
+    let screen = document.getElementById("levelCompleteScreen");
+    let message = document.getElementById("levelMessage");
+
+    message.innerHTML = `Great job, ${playerName}! Get ready for the next challenge...`;
+    screen.classList.add("show");
+
+    let sound = document.getElementById("levelUpSound");
+    if(sound) sound.play().catch(()=>{});
+
+    setTimeout(()=>{
+        window.location.href = nextLevel;
+    }, 2500);
+}
+
+// Hint
+function showHint3(){
+    alert("💡 Use F = m × a");
+}
+
+// Init
+startTimer();
+moveTrain();
+updateScore();
+</script>
+
+</body>
+</html>
