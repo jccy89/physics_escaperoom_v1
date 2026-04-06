@@ -36,6 +36,7 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
             position: relative;
+            z-index: 1;
         }
 
         #scoreDisplay {
@@ -87,6 +88,31 @@
             width: 280px;
             left: -300px;
         }
+
+        /* Level Complete Screen */
+        #levelCompleteScreen {
+            position: fixed;
+            top:0; left:0;
+            width:100%;
+            height:100%;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            z-index: 20;
+
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        #levelCompleteScreen.show {
+            opacity: 1;
+            pointer-events: all;
+        }
     </style>
 </head>
 
@@ -112,7 +138,13 @@
     <p class="hint" onclick="showHint2()">💡 Need a hint?</p>
     <p id="feedback"></p>
 
-    <img id="train" src="train.png">
+    <img id="train" src="train.png" alt="train">
+</div>
+
+<!-- Level Complete Screen -->
+<div id="levelCompleteScreen">
+    <h1>🎉 Level Complete!</h1>
+    <p id="levelMessage"></p>
 </div>
 
 <!-- Audio -->
@@ -121,8 +153,10 @@
 <audio id="wrongSound" src="wrong.mp3"></audio>
 <audio id="tickSound" src="tick.mp3"></audio>
 <audio id="crashSound" src="crash.mp3"></audio>
+<audio id="levelUpSound" src="levelup.mp3"></audio>
 
 <script>
+let playerName = localStorage.getItem("playerName") || "Player";
 let totalTime = 25;
 let timerInterval;
 
@@ -140,7 +174,7 @@ function startTimer(){
     timerInterval = setInterval(()=>{
         timerEl.innerHTML = `⏳ Time Left: ${totalTime}s`;
 
-        // Faster tension (last 7 seconds)
+        // Tick sound last 7s
         if(totalTime <= 7 && totalTime > 0){
             document.getElementById("tickSound").play().catch(()=>{});
         }
@@ -149,7 +183,6 @@ function startTimer(){
 
         if(totalTime < 0){
             clearInterval(timerInterval);
-
             document.getElementById("crashSound").play();
             alert("💥 Time's up! The train couldn't handle the acceleration!");
             location.reload();
@@ -163,7 +196,7 @@ function updateScore(){
     document.getElementById("scoreDisplay").innerHTML = "Score: " + localStorage.score;
 }
 
-// Train animation (faster than Level 1)
+// Train animation
 function moveTrain(){
     let train = document.getElementById("train");
     let pos = -300;
@@ -171,7 +204,6 @@ function moveTrain(){
     function animate(){
         pos += 8;
         train.style.left = pos + "px";
-
         if(pos < window.innerWidth){
             requestAnimationFrame(animate);
         }
@@ -179,9 +211,9 @@ function moveTrain(){
     animate();
 }
 
-// Answer check
+// Check answer
 function checkAnswer2(){
-    let ans = document.getElementById("ans2").value;
+    let ans = document.getElementById("ans2").value.trim();
     let feedback = document.getElementById("feedback");
 
     if(ans === "4"){
@@ -191,16 +223,29 @@ function checkAnswer2(){
         localStorage.score = parseInt(localStorage.score) + 10;
         updateScore();
 
-        setTimeout(()=>{
-            alert("🚆 Moving to Level 3...");
-            location.reload();
-        },1000);
-
+        // Show Level Complete screen and move to Level 3
+        showLevelComplete("level3.html");
     } else {
         feedback.innerHTML = "❌ Wrong! The train loses control!";
         document.getElementById("wrongSound").play();
         document.getElementById("crashSound").play();
     }
+}
+
+// Show Level Complete Screen
+function showLevelComplete(nextLevel){
+    let screen = document.getElementById("levelCompleteScreen");
+    let message = document.getElementById("levelMessage");
+
+    message.innerHTML = `Great job, ${playerName}! Get ready for the next challenge...`;
+    screen.classList.add("show");
+
+    let sound = document.getElementById("levelUpSound");
+    if(sound) sound.play().catch(()=>{});
+
+    setTimeout(()=>{
+        window.location.href = nextLevel;
+    }, 2500);
 }
 
 // Hint
