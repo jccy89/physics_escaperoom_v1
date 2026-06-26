@@ -1,0 +1,7 @@
+<!DOCTYPE html><html><head><link rel='stylesheet' href='style.css'><style>:root{--bg:url('wallpaper.jpg')}</style></head>
+<body><div class='container'><h1>🏆 Congratulations!</h1><h2>Physics Escape Room Completed</h2>
+<p id='name'></p><h3 id='score'></h3><button onclick='location.href="index.html"'>Play Again</button></div>
+<script>
+document.getElementById('name').textContent='Engineer: '+(localStorage.playerName||'Player');
+document.getElementById('score').textContent='Final Score: '+(localStorage.score||0);
+</script></body></html>
