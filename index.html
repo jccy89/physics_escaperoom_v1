@@ -111,6 +111,7 @@ if(!localStorage.score) localStorage.score=0;
 function startGame(){
 player=document.getElementById("playerName").value.trim();
 if(player===""){alert("Please enter your name.");return;}
+localStorage.setItem("playerName", player);
 document.getElementById("start").style.display="none";
 document.getElementById("bgm").play().catch(()=>{});
 updateScore();
