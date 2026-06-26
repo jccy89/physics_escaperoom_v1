@@ -1,7 +1,290 @@
-<!DOCTYPE html><html><head><link rel='stylesheet' href='style.css'><style>:root{--bg:url('wallpaper.jpg')}</style></head>
-<body><div class='container'><h1>🏆 Congratulations!</h1><h2>Physics Escape Room Completed</h2>
-<p id='name'></p><h3 id='score'></h3><button onclick='location.href="index.html"'>Play Again</button></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Physics Escape Room - Certificate</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    overflow:hidden;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+        linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+        url("wallpaper2.jpg") center/cover no-repeat;
+    z-index:-2;
+}
+
+#confetti{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:-1;
+}
+
+.certificate{
+
+    width:min(900px,92%);
+
+    background:rgba(255,255,255,.12);
+
+    backdrop-filter:blur(12px);
+
+    padding:45px;
+
+    border-radius:20px;
+
+    text-align:center;
+
+    box-shadow:0 10px 40px rgba(0,0,0,.45);
+}
+
+h1{
+
+    font-size:50px;
+
+    margin-bottom:10px;
+}
+
+h2{
+
+    color:gold;
+
+    margin-bottom:30px;
+}
+
+#award{
+
+    font-size:80px;
+
+    margin:20px;
+}
+
+#player{
+
+    font-size:36px;
+
+    color:#22c55e;
+
+    margin:20px 0;
+}
+
+#score{
+
+    font-size:28px;
+
+    color:#facc15;
+
+    margin:15px;
+}
+
+#rank{
+
+    font-size:34px;
+
+    font-weight:bold;
+
+    margin-bottom:30px;
+}
+
+button{
+
+    padding:14px 28px;
+
+    margin:10px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#22c55e;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    font-weight:bold;
+}
+
+button:hover{
+
+    background:#16a34a;
+}
+
+.small{
+
+    margin-top:30px;
+
+    opacity:.8;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<canvas id="confetti"></canvas>
+
+<div class="certificate">
+
+<h1>🏆</h1>
+
+<h2>KUTS ART Engineering Challenge</h2>
+
+<h3>Certificate of Completion</h3>
+
+<p>This certificate is proudly presented to</p>
+
+<div id="player"></div>
+
+<p>for successfully completing all four engineering missions in the</p>
+
+<h2>Physics Escape Room</h2>
+
+<div id="award"></div>
+
+<div id="rank"></div>
+
+<div id="score"></div>
+
+<button onclick="window.print()">🖨 Print Certificate</button>
+
+<button onclick="playAgain()">🔄 Play Again</button>
+
+<p class="small">
+
+Congratulations on successfully completing the
+
+KUTS ART Engineering Challenge!
+
+</p>
+
+</div>
+
 <script>
-document.getElementById('name').textContent='Engineer: '+(localStorage.playerName||'Player');
-document.getElementById('score').textContent='Final Score: '+(localStorage.score||0);
-</script></body></html>
+
+const player =
+localStorage.getItem("playerName") || "Engineer";
+
+const score =
+parseInt(localStorage.getItem("score")) || 0;
+
+document.getElementById("player").innerHTML=player;
+
+document.getElementById("score").innerHTML=
+"Final Score : <b>"+score+" / 240</b>";
+
+let award="🥉";
+let rank="Bronze Engineer";
+
+if(score>=210){
+
+award="🥇";
+
+rank="Gold Engineer";
+
+}
+
+else if(score>=170){
+
+award="🥈";
+
+rank="Silver Engineer";
+
+}
+
+document.getElementById("award").innerHTML=award;
+
+document.getElementById("rank").innerHTML=rank;
+
+function playAgain(){
+
+localStorage.score=0;
+
+window.location.href="index.html";
+
+}
+
+/* ------------------------
+Simple Confetti
+------------------------- */
+
+const canvas=document.getElementById("confetti");
+
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+
+canvas.height=window.innerHeight;
+
+const pieces=[];
+
+for(let i=0;i<180;i++){
+
+pieces.push({
+
+x:Math.random()*canvas.width,
+
+y:Math.random()*canvas.height,
+
+r:Math.random()*6+3,
+
+d:Math.random()*180,
+
+c:`hsl(${Math.random()*360},90%,60%)`
+
+});
+
+}
+
+function draw(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+pieces.forEach(p=>{
+
+ctx.beginPath();
+
+ctx.fillStyle=p.c;
+
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+
+ctx.fill();
+
+p.y+=2;
+
+if(p.y>canvas.height){
+
+p.y=-10;
+
+p.x=Math.random()*canvas.width;
+
+}
+
+});
+
+requestAnimationFrame(draw);
+
+}
+
+draw();
+
+</script>
+
+</body>
+</html>
