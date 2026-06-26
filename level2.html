@@ -5,10 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Physics Escape Room - Level 2</title>
 <style>
-body::before{
-content:"";position:fixed;inset:0;
-background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url('wallpaper2.jpg') center/cover no-repeat;
-z-index:-1}
+body::before{content:"";position:fixed;inset:0;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url('wallpaper2.jpg') center/cover no-repeat;z-index:-1}
 body{margin:0;font-family:Arial,sans-serif;color:#fff;display:flex;justify-content:center;padding:30px}
 .container{width:min(900px,92%);background:rgba(255,255,255,.12);backdrop-filter:blur(10px);padding:25px;border-radius:18px;position:relative}
 #score{position:absolute;top:18px;right:20px;font-weight:bold;color:gold}
@@ -22,160 +19,114 @@ button{padding:10px 20px;border:none;border-radius:8px;margin:8px;cursor:pointer
 button:hover{background:#16a34a}
 #timer{font-size:20px;color:#facc15;margin:10px 0}
 #train{position:absolute;bottom:-40px;left:-320px;width:260px}
+#start{position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:10}
 </style>
 </head>
 <body>
 
+<div id="start">
+<h1>⚙️ Level 2 - Dynamics</h1>
+<p id="welcome"></p>
+<button onclick="startMission()">Start Mission</button>
+</div>
+
 <div class="container">
 <div id="score">Score: 0</div>
 
-<h2>⚙️ Level 2 of 4 - Dynamics</h2>
-<div class="bar"><div class="fill" id="overallFill"></div></div>
+<h2>Level 2 of 4</h2>
+<div class="bar"><div class="fill"></div></div>
 
 <h3 id="difficulty"></h3>
 <div class="bar" id="stageBar"><div class="fill" id="stageFill"></div></div>
 
 <div id="timer"></div>
-
 <h2 id="questionTitle"></h2>
 <p id="question"></p>
 
-<input id="answer" placeholder="Enter your answer">
-<br>
+<input id="answer" placeholder="Enter your answer"><br>
 <button onclick="checkAnswer()">Submit</button>
 <button onclick="showHint()">💡 Hint</button>
-
 <p id="feedback"></p>
 
-<img src="train.png" id="train">
+<img id="train" src="train.png">
 
 <audio id="correctSound" src="correct.mp3"></audio>
 <audio id="wrongSound" src="wrong.mp3"></audio>
 <audio id="tickSound" src="tick.mp3"></audio>
 <audio id="bgm" src="bgm.mp3" loop></audio>
 <audio id="crashSound" src="crash.mp3"></audio>
+</div>
 
 <script>
 const player=localStorage.getItem("playerName")||"Engineer";
+document.getElementById("welcome").innerHTML="Welcome back, <b>"+player+"</b>!";
 
 const stages=[
-{
-difficulty:"Easy",
-className:"easy",
-title:"Stage 1",
-question:`A fully loaded KUTS ART vehicle travels at <b>70 km/h</b> before emergency braking is activated. The vehicle stops completely in <b>25 s</b>.<br><br>
-Given:<br>
-• Empty vehicle mass = 42,000 kg<br>
-• Passenger capacity = 300 persons<br>
-• Average passenger mass = 80 kg/person<br><br>
-Calculate the average braking force required.<br><b>Answer in kN (3 s.f.).</b>`,
-answer:51.3,
-tol:0.5,
-hint:"Find total mass first, then use F = ma.",
-score:10
-},
-{
-difficulty:"Moderate",
-className:"moderate",
-title:"Stage 2",
-question:`A fully loaded ART has a mass of <b>66,000 kg</b>.<br><br>
-Driving force = <b>50 kN</b><br>
-Rolling resistance = <b>8 kN</b><br><br>
-Calculate the actual acceleration.<br><b>Answer in m/s² (3 s.f.).</b>`,
-answer:0.636,
-tol:0.005,
-hint:"Fnet = Fdrive − Fresistance, then use F = ma.",
-score:20
-},
-{
-difficulty:"Challenge",
-className:"challenge",
-title:"Stage 3",
-question:`A fully loaded ART (66,000 kg) experiences:<br><br>
-• Traction force = 70 kN<br>
-• Drag force = 6.5 kN<br>
-• Rolling resistance = 4.0 kN<br><br>
-Calculate the acceleration.<br><b>Answer in m/s² (3 s.f.).</b>`,
-answer:0.902,
-tol:0.005,
-hint:"Fnet = Fdrive − Fdrag − Frolling",
-score:30
-}
+{difficulty:"Easy",className:"easy",title:"Stage 1",
+question:`A fully loaded KUTS ART travels at <b>70 km/h</b> before emergency braking and stops in <b>25 s</b>.<br><br>
+Given:<br>• Empty mass = 42,000 kg<br>• 300 passengers<br>• 80 kg each<br><br>Calculate the average braking force (kN).`,
+answer:51.3,tol:0.5,hint:"Find total mass, calculate acceleration, then F=ma.",score:10},
+{difficulty:"Moderate",className:"moderate",title:"Stage 2",
+question:`Mass = 66,000 kg<br>Driving force = 50 kN<br>Rolling resistance = 8 kN<br><br>Calculate the acceleration (m/s²).`,
+answer:0.636,tol:0.005,hint:"Fnet=Fdrive−Fresistance",score:20},
+{difficulty:"Challenge",className:"challenge",title:"Stage 3",
+question:`Mass = 66,000 kg<br>Traction = 70 kN<br>Drag = 6.5 kN<br>Rolling resistance = 4.0 kN<br><br>Calculate the acceleration (m/s²).`,
+answer:0.902,tol:0.005,hint:"Fnet=Fdrive−Fdrag−Frolling",score:30}
 ];
+let current=0,totalTime=180,timerInterval;
+if(!localStorage.score)localStorage.score=0;
 
-let current=0;
-let totalTime=180;
-let timer;
-
-if(!localStorage.score) localStorage.score=0;
-
-window.onload=()=>{
-document.getElementById("bgm").play().catch(()=>{});
-updateScore();
-loadStage();
-startTimer();
-moveTrain();
-};
-
+function startMission(){
+ document.getElementById("start").style.display="none";
+ document.getElementById("bgm").play().catch(()=>{});
+ updateScore(); loadStage(); startTimer(); moveTrain();
+}
 function loadStage(){
-let s=stages[current];
-difficulty.innerHTML=`<span class="badge ${s.className}">${s.difficulty}</span>`;
-questionTitle.textContent=s.title;
-question.innerHTML=s.question;
-answer.value="";
-feedback.innerHTML="";
-stageFill.style.width=((current+1)/3*100)+"%";
+ let s=stages[current];
+ difficulty.innerHTML=`<span class="badge ${s.className}">${s.difficulty}</span>`;
+ questionTitle.textContent=s.title;
+ question.innerHTML=s.question;
+ answer.value=""; feedback.textContent="";
+ stageFill.style.width=((current+1)/3*100)+"%";
 }
-
 function checkAnswer(){
-let val=parseFloat(answer.value);
-let s=stages[current];
-if(Math.abs(val-s.answer)<=s.tol){
-correctSound.play();
-localStorage.score=parseInt(localStorage.score)+s.score;
-updateScore();
-if(current<2){
-feedback.innerHTML="✅ Correct! Loading next stage...";
-current++;
-setTimeout(loadStage,1200);
-}else{
-clearInterval(timer);
-feedback.innerHTML=`<h2>🎉 Well done ${player}!</h2>
-<p>You completed Level 2.</p>
-<p>Preparing Level 3...</p>`;
-setTimeout(()=>location.href="level3.html",2500);
+ let v=parseFloat(answer.value),s=stages[current];
+ if(Math.abs(v-s.answer)<=s.tol){
+  correctSound.play();
+  localStorage.score=parseInt(localStorage.score)+s.score;
+  updateScore();
+  if(current<2){feedback.innerHTML="✅ Correct! Loading next stage...";current++;setTimeout(loadStage,1200);}
+  else{
+   clearInterval(timerInterval);
+   feedback.innerHTML=`<h2>🎉 Excellent ${player}!</h2><p>Preparing Level 3...</p>`;
+   setTimeout(()=>location.href="level3.html",2500);
+  }
+ }else{
+  wrongSound.play();
+  feedback.textContent="❌ Incorrect. Try again!";
+ }
 }
-}else{
-wrongSound.play();
-feedback.innerHTML="❌ Incorrect. Try again!";
-}
-}
-
 function showHint(){alert(stages[current].hint);}
-
 function updateScore(){score.textContent="Score: "+localStorage.score;}
-
 function startTimer(){
-timer.textContent="⏳ Time Left: "+totalTime+" s";
-timer=setInterval(()=>{
-totalTime--;
-document.getElementById("timer").textContent="⏳ Time Left: "+totalTime+" s";
-if(totalTime<=5 && totalTime>0) tickSound.play().catch(()=>{});
-if(totalTime<=0){
-clearInterval(timer);
-crashSound.play().catch(()=>{});
-alert("⏰ Time's up! Mission failed.");
-location.reload();
+ const timerEl=document.getElementById("timer");
+ timerEl.textContent="⏳ Time Left: "+totalTime+" s";
+ timerInterval=setInterval(()=>{
+   totalTime--;
+   timerEl.textContent="⏳ Time Left: "+totalTime+" s";
+   if(totalTime<=5&&totalTime>0)tickSound.play().catch(()=>{});
+   if(totalTime<=0){
+      clearInterval(timerInterval);
+      crashSound.play().catch(()=>{});
+      alert("⏰ Time's up! The ART failed the braking test.");
+      location.reload();
+   }
+ },1000);
 }
-},1000);
-}
-
 function moveTrain(){
-let t=document.getElementById("train");
-let p=-320;
-(function a(){p+=3;t.style.left=p+"px";if(p<window.innerWidth)requestAnimationFrame(a);})();
+ let t=document.getElementById("train"),p=-320;
+ (function anim(){p+=3;t.style.left=p+"px";if(p<window.innerWidth)requestAnimationFrame(anim);})();
 }
 </script>
-</div>
 </body>
 </html>
