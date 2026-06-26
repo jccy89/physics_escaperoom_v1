@@ -1,253 +1,35 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Physics Escape Room - Level 4</title>
-    <style>
-        body::before {
-            content: "";
-            position: fixed;
-            top:0; left:0;
-            width:100%; height:100%;
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
-                        url('wallpaper4.jpg');
-            background-size: cover;
-            background-position: center;
-            z-index: -1;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding-top: 40px;
-            color: white;
-            text-align: center;
-            font-family: Arial, sans-serif;
-        }
-
-        .container {
-            width: 60%;
-            max-width: 600px;
-            padding: 30px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            position: relative;
-            z-index: 1;
-        }
-
-        #scoreDisplay {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            color: #facc15;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 10px;
-            background: #334155;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 100%;
-            background: #22c55e;
-        }
-
-        input {
-            padding:10px;
-            border-radius:8px;
-            border:none;
-            width: 60%;
-        }
-
-        button {
-            padding:10px 20px;
-            margin:10px;
-            border:none;
-            border-radius:8px;
-            background:#22c55e;
-            font-weight:bold;
-            cursor:pointer;
-        }
-
-        button:hover { background:#16a34a; }
-
-        #timer { color:#facc15; margin-bottom:15px; }
-        .hint { color:#38bdf8; cursor:pointer; }
-
-        #train {
-            position: absolute;
-            bottom: -70px; /* lowest train position for final level */
-            width: 260px;
-            left: -300px;
-        }
-
-        /* Level Complete / Game Complete Screen */
-        #levelCompleteScreen {
-            position: fixed;
-            top:0; left:0;
-            width:100%;
-            height:100%;
-            background: rgba(0,0,0,0.9);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            z-index: 20;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-        }
-
-        #levelCompleteScreen.show {
-            opacity: 1;
-            pointer-events: all;
-        }
-    </style>
-</head>
-
+<!DOCTYPE html><html><head><meta charset='UTF-8'>
+<title>Level 4 - Momentum & Impulse</title>
+<link rel='stylesheet' href='style.css'>
+<style>:root{--bg:url('wallpaper2.jpg')}#train{width:240px}</style></head>
 <body>
-
-<div class="container">
-    <div id="scoreDisplay">Score: 0</div>
-
-    <div class="progress-bar">
-        <div class="progress-fill"></div>
-    </div>
-    <p>Level 4 of 4</p>
-
-    <div id="timer"></div>
-
-    <h2>⚡ Level 4: Work & Energy</h2>
-    <p>A 2000 kg train climbs a hill of height 10 m. What is the gravitational potential energy gained?</p>
-    <p><b>Answer in Joules (J)</b></p>
-
-    <input type="text" id="ans4"><br>
-    <button onclick="checkAnswer4()">Submit</button>
-
-    <p class="hint" onclick="showHint4()">💡 Need a hint?</p>
-    <p id="feedback"></p>
-
-    <img id="train" src="train.png" alt="train">
+<div class='container'>
+<h1>Level 4 - Momentum & Impulse</h1>
+<div>Overall Progress<div class='bar'><div class='fill' style='width:100%'></div></div></div>
+<p id='score'></p><div id='diff'></div><div id='q'></div>
+<input id='ans'><br><button onclick='check()'>Submit</button>
+<button onclick='hint()'>Hint</button><p id='fb'></p>
+<img id='train' src='train.png'>
 </div>
-
-<!-- Level Complete Screen -->
-<div id="levelCompleteScreen">
-    <h1>🎉 Game Complete!</h1>
-    <p id="levelMessage"></p>
-</div>
-
-<!-- Audio -->
-<audio id="gameBgm" src="bgm.mp3" loop></audio>
-<audio id="correctSound" src="correct.mp3"></audio>
-<audio id="wrongSound" src="wrong.mp3"></audio>
-<audio id="tickSound" src="tick.mp3"></audio>
-<audio id="crashSound" src="crash.mp3"></audio>
-<audio id="levelUpSound" src="levelup.mp3"></audio>
-
 <script>
-let playerName = localStorage.getItem("playerName") || "Player";
-let totalTime = 35;
-let timerInterval;
-
-// Start BGM immediately
-window.onload = ()=>{
-    let bgm = document.getElementById("gameBgm");
-    bgm.volume = 0.4;
-    bgm.play().catch(()=>{});
-};
-
-// Timer
-function startTimer(){
-    let timerEl = document.getElementById("timer");
-
-    timerInterval = setInterval(()=>{
-        timerEl.innerHTML = `⏳ Time Left: ${totalTime}s`;
-
-        if(totalTime <= 7 && totalTime > 0){
-            document.getElementById("tickSound").play().catch(()=>{});
-        }
-
-        totalTime--;
-        if(totalTime < 0){
-            clearInterval(timerInterval);
-            document.getElementById("crashSound").play();
-            alert("💥 Time's up! The train couldn't climb the hill!");
-            location.reload();
-        }
-    },1000);
+const stages=[\n{diff:"Easy",cls:"easy",title:"Stage 1",q:"Average braking force (kN).",a:52.8,t:0.5,h:"F=m(v-u)/t",score:10},\n{diff:"Moderate",cls:"moderate",title:"Stage 2",q:"Minimum stopping time (s).",a:29.3,t:0.2,h:"F=m(v-u)/t",score:20},\n{diff:"Challenge",cls:"challenge",title:"Stage 3",q:"Stopping distance (m).",a:226,t:1,h:"Ft=m(v-u); s=(u+v)t/2",score:30}\n];
+let i=0;
+if(!localStorage.score) localStorage.score=0;
+function load(){
+let s=stages[i];
+document.getElementById('score').textContent='Score: '+localStorage.score;
+document.getElementById('diff').innerHTML='<span class="badge '+s.cls+'">'+s.diff+'</span>';
+document.getElementById('q').innerHTML='<h3>'+s.title+'</h3><p>'+s.q+'</p>';
+document.getElementById('ans').value='';document.getElementById('fb').textContent='';
 }
-
-// Score
-if(!localStorage.score) localStorage.score = 0;
-function updateScore(){
-    document.getElementById("scoreDisplay").innerHTML = "Score: " + localStorage.score;
+function check(){
+let s=stages[i],v=parseFloat(document.getElementById('ans').value);
+if(Math.abs(v-s.a)<=s.t){
+localStorage.score=parseInt(localStorage.score)+s.score;
+if(i<2){i++;load();}
+else{alert('Level Complete!');location.href='certificate.html';}
+}else{document.getElementById('fb').textContent='Incorrect. Try again.';}
 }
-
-// Train animation
-function moveTrain(){
-    let train = document.getElementById("train");
-    let pos = -300;
-    function animate(){
-        pos += 8;
-        train.style.left = pos + "px";
-        if(pos < window.innerWidth) requestAnimationFrame(animate);
-    }
-    animate();
-}
-
-// Check answer
-function checkAnswer4(){
-    let ans = document.getElementById("ans4").value.trim();
-    let feedback = document.getElementById("feedback");
-
-    if(ans === "196000"){  // 2000kg * 9.8 m/s² * 10 m
-        feedback.innerHTML = "✅ Correct! The train has successfully climbed the hill!";
-        document.getElementById("correctSound").play();
-
-        localStorage.score = parseInt(localStorage.score) + 10;
-        updateScore();
-
-        // Show Game Complete screen (no next level)
-        showLevelComplete();
-    } else {
-        feedback.innerHTML = "❌ Wrong! The train cannot climb!";
-        document.getElementById("wrongSound").play();
-        document.getElementById("crashSound").play();
-    }
-}
-
-// Show Level Complete / Game Complete Screen
-function showLevelComplete(){
-    let screen = document.getElementById("levelCompleteScreen");
-    let message = document.getElementById("levelMessage");
-
-    message.innerHTML = `🎉 Congratulations, ${playerName}! You completed all levels! Your final score is ${localStorage.score}.`;
-    screen.classList.add("show");
-
-    let sound = document.getElementById("levelUpSound");
-    if(sound) sound.play().catch(()=>{});
-}
-
-// Hint
-function showHint4(){
-    alert("💡 Use PE = m × g × h");
-}
-
-// Init
-startTimer();
-moveTrain();
-updateScore();
-</script>
-
-</body>
-</html>
+function hint(){alert(stages[i].h);}
+load();
+</script></body></html>
