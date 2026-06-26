@@ -1,289 +1,184 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Physics Escape Room - Certificate</title>
+<title>KUTS ART Engineering Challenge - Certificate</title>
 
 <style>
-
 body{
     margin:0;
-    font-family:Arial,sans-serif;
-    color:white;
+    font-family:Arial,Helvetica,sans-serif;
     display:flex;
     justify-content:center;
     align-items:center;
     min-height:100vh;
+    color:white;
     overflow:hidden;
 }
-
 body::before{
     content:"";
     position:fixed;
     inset:0;
     background:
-        linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
-        url("wallpaper2.jpg") center/cover no-repeat;
+      linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+      url("wallpaper2.jpg") center/cover no-repeat;
     z-index:-2;
 }
-
 #confetti{
     position:fixed;
     inset:0;
     pointer-events:none;
     z-index:-1;
 }
-
-.certificate{
-
-    width:min(900px,92%);
-
-    background:rgba(255,255,255,.12);
-
-    backdrop-filter:blur(12px);
-
-    padding:45px;
-
-    border-radius:20px;
-
+#intro{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.92);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
     text-align:center;
-
+    transition:opacity 1s;
+}
+#intro h1{font-size:48px;margin:10px;}
+#intro p{font-size:24px;}
+.certificate{
+    display:none;
+    width:min(920px,92%);
+    background:rgba(255,255,255,.12);
+    backdrop-filter:blur(10px);
+    border-radius:20px;
+    padding:40px;
+    text-align:center;
     box-shadow:0 10px 40px rgba(0,0,0,.45);
 }
-
-h1{
-
-    font-size:50px;
-
-    margin-bottom:10px;
-}
-
-h2{
-
-    color:gold;
-
-    margin-bottom:30px;
-}
-
-#award{
-
-    font-size:80px;
-
-    margin:20px;
-}
-
-#player{
-
-    font-size:36px;
-
-    color:#22c55e;
-
-    margin:20px 0;
-}
-
-#score{
-
-    font-size:28px;
-
-    color:#facc15;
-
-    margin:15px;
-}
-
-#rank{
-
-    font-size:34px;
-
-    font-weight:bold;
-
-    margin-bottom:30px;
-}
-
+h2{color:#ffd700;margin:10px 0;}
+#player{font-size:38px;color:#4ade80;font-weight:bold;margin:20px;}
+#award{font-size:80px;margin:10px;}
+#rank{font-size:34px;font-weight:bold;margin:15px;}
+#score{font-size:28px;color:#facc15;margin:15px;}
+.buttons{margin-top:30px;}
 button{
-
-    padding:14px 28px;
-
-    margin:10px;
-
+    padding:12px 24px;
+    margin:8px;
     border:none;
-
     border-radius:10px;
-
     background:#22c55e;
-
-    cursor:pointer;
-
     font-size:18px;
-
     font-weight:bold;
+    cursor:pointer;
 }
-
-button:hover{
-
-    background:#16a34a;
+button:hover{background:#16a34a;}
+.footer{opacity:.8;margin-top:25px;}
+@media print{
+    body::before,#intro,#confetti,.buttons{display:none!important;}
+    .certificate{display:block!important;width:100%;box-shadow:none;background:white;color:black;}
+    h2{color:#444;}
+    #score{color:#000;}
+    #player{color:#006400;}
 }
-
-.small{
-
-    margin-top:30px;
-
-    opacity:.8;
-}
-
 </style>
-
 </head>
-
 <body>
 
 <canvas id="confetti"></canvas>
 
-<div class="certificate">
+<div id="intro">
+    <h1>🎉 Mission Complete!</h1>
+    <p>🚆 The ART has successfully arrived at the station.</p>
+    <p>All engineering missions have been completed.</p>
+    <p><strong>Calculating final results...</strong></p>
+</div>
 
-<h1>🏆</h1>
+<div class="certificate" id="certificate">
+    <h1>🏆</h1>
+    <h2>KUTS ART Engineering Challenge</h2>
+    <h3>Certificate of Completion</h3>
 
-<h2>KUTS ART Engineering Challenge</h2>
+    <p>This certificate is proudly presented to</p>
 
-<h3>Certificate of Completion</h3>
+    <div id="player"></div>
 
-<p>This certificate is proudly presented to</p>
+    <p>for successfully completing all four engineering missions in the</p>
 
-<div id="player"></div>
+    <h2>Physics Escape Room</h2>
 
-<p>for successfully completing all four engineering missions in the</p>
+    <div id="award"></div>
+    <div id="rank"></div>
+    <div id="score"></div>
 
-<h2>Physics Escape Room</h2>
+    <div class="buttons">
+        <button onclick="downloadCertificate()">📄 Download Certificate (PDF)</button>
+        <button onclick="window.print()">🖨 Print Certificate</button>
+        <button onclick="playAgain()">🔄 Play Again</button>
+    </div>
 
-<div id="award"></div>
-
-<div id="rank"></div>
-
-<div id="score"></div>
-
-<button onclick="window.print()">🖨 Print Certificate</button>
-
-<button onclick="playAgain()">🔄 Play Again</button>
-
-<p class="small">
-
-Congratulations on successfully completing the
-
-KUTS ART Engineering Challenge!
-
-</p>
-
+    <p class="footer">
+        Congratulations on becoming a Certified KUTS ART Engineer!
+    </p>
 </div>
 
 <script>
+const player = localStorage.getItem("playerName") || "Engineer";
+const score = parseInt(localStorage.getItem("score") || "0");
 
-const player =
-localStorage.getItem("playerName") || "Engineer";
+let medal="🥉",rank="Bronze Engineer";
+if(score>=210){medal="🥇";rank="Gold Engineer";}
+else if(score>=170){medal="🥈";rank="Silver Engineer";}
 
-const score =
-parseInt(localStorage.getItem("score")) || 0;
+setTimeout(()=>{
+    document.getElementById("intro").style.opacity="0";
+    setTimeout(()=>{
+        document.getElementById("intro").style.display="none";
+        document.getElementById("certificate").style.display="block";
+    },1000);
+},5000);
 
-document.getElementById("player").innerHTML=player;
-
-document.getElementById("score").innerHTML=
-"Final Score : <b>"+score+" / 240</b>";
-
-let award="🥉";
-let rank="Bronze Engineer";
-
-if(score>=210){
-
-award="🥇";
-
-rank="Gold Engineer";
-
-}
-
-else if(score>=170){
-
-award="🥈";
-
-rank="Silver Engineer";
-
-}
-
-document.getElementById("award").innerHTML=award;
-
-document.getElementById("rank").innerHTML=rank;
+document.getElementById("player").textContent=player;
+document.getElementById("award").textContent=medal;
+document.getElementById("rank").textContent=rank;
+document.getElementById("score").innerHTML="Final Score: <b>"+score+" / 240</b>";
 
 function playAgain(){
-
-localStorage.score=0;
-
-window.location.href="index.html";
-
+    localStorage.setItem("score","0");
+    window.location.href="index.html";
 }
 
-/* ------------------------
-Simple Confetti
-------------------------- */
-
-const canvas=document.getElementById("confetti");
-
-const ctx=canvas.getContext("2d");
-
-canvas.width=window.innerWidth;
-
-canvas.height=window.innerHeight;
-
-const pieces=[];
-
-for(let i=0;i<180;i++){
-
-pieces.push({
-
-x:Math.random()*canvas.width,
-
-y:Math.random()*canvas.height,
-
-r:Math.random()*6+3,
-
-d:Math.random()*180,
-
-c:`hsl(${Math.random()*360},90%,60%)`
-
-});
-
+function downloadCertificate(){
+    window.print();
 }
 
-function draw(){
+/* Simple confetti */
+const c=document.getElementById("confetti");
+const ctx=c.getContext("2d");
+function resize(){c.width=innerWidth;c.height=innerHeight;}
+resize();
+addEventListener("resize",resize);
 
-ctx.clearRect(0,0,canvas.width,canvas.height);
+const pieces=[...Array(180)].map(()=>({
+x:Math.random()*innerWidth,
+y:Math.random()*innerHeight,
+r:2+Math.random()*5,
+vy:1+Math.random()*3,
+h:Math.random()*360
+}));
 
-pieces.forEach(p=>{
-
+function animate(){
+ctx.clearRect(0,0,c.width,c.height);
+for(const p of pieces){
 ctx.beginPath();
-
-ctx.fillStyle=p.c;
-
+ctx.fillStyle=`hsl(${p.h},90%,60%)`;
 ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-
 ctx.fill();
-
-p.y+=2;
-
-if(p.y>canvas.height){
-
-p.y=-10;
-
-p.x=Math.random()*canvas.width;
-
+p.y+=p.vy;
+if(p.y>innerHeight){p.y=-10;p.x=Math.random()*innerWidth;}
 }
-
-});
-
-requestAnimationFrame(draw);
-
+requestAnimationFrame(animate);
 }
-
-draw();
-
+animate();
 </script>
 
 </body>
