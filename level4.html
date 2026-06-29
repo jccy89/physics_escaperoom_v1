@@ -109,13 +109,17 @@ current++;
 setTimeout(loadStage,1200);
 }else{
 clearInterval(timerInterval);
-feedback.innerHTML=`<h2>🏆 Congratulations!</h2>
+feedback.innerHTML = `
+<h2>🏆 Congratulations!</h2>
 <p>You have completed the Physics Escape Room.</p>
 <p><b>Final Score: ${localStorage.score}</b></p>
 <p>🏁 All engineering missions completed successfully.</p>
 <p>Preparing your final evaluation...</p>
+`;
 
-setTimeout(()=>window.location.href="rating.html",3000);
+setTimeout(() => {
+    window.location.href = "rating.html";
+}, 3000);
 }
 }else{
 wrongSound.play();
