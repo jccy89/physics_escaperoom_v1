@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -109,6 +108,7 @@ button:hover{background:#16a34a;}
     <div id="award"></div>
     <div id="rank"></div>
     <div id="score"></div>
+    <div id="rating" style="font-size:26px; margin-top:15px;"></div>
 
     <div class="buttons">
         <button onclick="downloadCertificate()">📄 Download Certificate (PDF)</button>
@@ -124,6 +124,12 @@ button:hover{background:#16a34a;}
 <script>
 const player = localStorage.getItem("playerName") || "Engineer";
 const score = parseInt(localStorage.getItem("score") || "0");
+
+const rating = localStorage.getItem("rating");
+
+if (!rating) {
+    window.location.href = "rating.html";
+}
 
 let medal="🥉",rank="Bronze Engineer";
 if(score>=210){medal="🥇";rank="Gold Engineer";}
@@ -141,10 +147,17 @@ document.getElementById("player").textContent=player;
 document.getElementById("award").textContent=medal;
 document.getElementById("rank").textContent=rank;
 document.getElementById("score").innerHTML="Final Score: <b>"+score+" / 240</b>";
+document.getElementById("rating").innerHTML =
+"Experience Rating: " + "⭐".repeat(parseInt(rating));
 
 function playAgain(){
+
     localStorage.setItem("score","0");
+
+    localStorage.removeItem("rating");
+
     window.location.href="index.html";
+
 }
 
 function downloadCertificate(){
