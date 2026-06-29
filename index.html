@@ -150,10 +150,10 @@ Engineering Certificate.
 
 <input id="playerName" placeholder="Enter Your Name">
 
+<br><br>
 
-
-▶ START MISSION
-
+<button onclick="startGame()">
+    ▶ START MISSION
 </button>
 
 </div>
@@ -186,16 +186,7 @@ Engineering Certificate.
 <audio id="tickSound" src="tick.mp3"></audio>
 <audio id="bgm" src="bgm.mp3" loop></audio>
 <audio id="crashSound" src="crash.mp3"></audio>
-</div>
 
-const intro = document.getElementById("intro");
-
-intro.onended = function () {
-    document.getElementById("introVideo").style.display = "none";
-    document.getElementById("start").style.display = "flex";
-};
-
-<script>
 const stages=[
 {
 difficulty:"Easy",
