@@ -127,8 +127,15 @@ const score = parseInt(localStorage.getItem("score") || "0");
 
 const rating = localStorage.getItem("rating");
 
+const reflection1 = localStorage.getItem("reflection1");
+const reflection2 = localStorage.getItem("reflection2");
+const reflection3 = localStorage.getItem("reflection3");
+
 if (!rating) {
     window.location.href = "rating.html";
+}
+if (!reflection1 || !reflection2 || !reflection3) {
+    window.location.href = "reflection.html";
 }
 
 let medal="🥉",rank="Bronze Engineer";
