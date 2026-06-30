@@ -470,6 +470,11 @@ function startGame(){
 
     localStorage.setItem("playerName", player);
 
+    // Create a unique session ID
+    const sessionID = Date.now().toString();
+
+    localStorage.setItem("sessionID", sessionID);
+
     // Start a new game
     localStorage.setItem("score", "0");
     updateScore();
