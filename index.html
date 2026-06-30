@@ -246,6 +246,10 @@ function startGame(){
 
     localStorage.setItem("playerName", player);
 
+    // Start a new game
+    localStorage.setItem("score", "0");
+    updateScore();
+
     // Hide the start screen
     document.getElementById("start").style.display = "none";
 
@@ -255,7 +259,6 @@ function startGame(){
     // Start background music
     document.getElementById("bgm").play().catch(()=>{});
 
-    updateScore();
     loadStage();
     startTimer();
     moveTrain();
