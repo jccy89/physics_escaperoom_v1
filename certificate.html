@@ -124,6 +124,7 @@ button:hover{background:#16a34a;}
 <script>
 const player = localStorage.getItem("playerName") || "Engineer";
 const score = parseInt(localStorage.getItem("score") || "0");
+const sessionID = localStorage.getItem("sessionID");
 
 const rating = localStorage.getItem("rating");
 
@@ -143,11 +144,26 @@ if(score>=210){medal="🥇";rank="Gold Engineer";}
 else if(score>=170){medal="🥈";rank="Silver Engineer";}
 
 setTimeout(()=>{
+
     document.getElementById("intro").style.opacity="0";
+
     setTimeout(()=>{
+
         document.getElementById("intro").style.display="none";
+
         document.getElementById("certificate").style.display="block";
+
+        // Update Google Sheet
+        fetch(
+            "https://script.google.com/macros/s/AKfycbykiiMMuVFMWosds-LTK07XMLnlqwPm8Jw8faviyZu7jm6koGoNJoC9v038bXhIRAk/exec?sessionID=" +
+            encodeURIComponent(sessionID)
+        )
+        .then(response => response.text())
+        .then(data => console.log("Certificate updated:", data))
+        .catch(error => console.error("Update failed:", error));
+
     },1000);
+
 },5000);
 
 document.getElementById("player").textContent=player;
