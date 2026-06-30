@@ -1,1 +1,193 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rate Your Experience</title><style>body{margin:0;font-family:Arial,sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url("wallpaper2.jpg") center/cover no-repeat;color:#fff}.card{width:min(700px,92%);background:rgba(255,255,255,.12);backdrop-filter:blur(12px);padding:40px;border-radius:20px;text-align:center}.stars{font-size:60px}.star{cursor:pointer;color:#777}.active{color:gold}button{padding:12px 24px;border:none;border-radius:10px;background:#22c55e;font-size:18px;font-weight:bold;cursor:pointer;margin-top:20px}</style></head><body><div class="card"><h1>🎉 Mission Complete!</h1><h2>Please rate your experience</h2><div class="stars"><span class="star" data-v="1">&#9733;</span><span class="star" data-v="2">&#9733;</span><span class="star" data-v="3">&#9733;</span><span class="star" data-v="4">&#9733;</span><span class="star" data-v="5">&#9733;</span></div><p id="txt">Select a rating</p><button onclick="submitRating()">Submit Rating</button><p id="msg"></p></div><script>let r=0;const names=["Very Poor","Poor","Good","Very Good","Excellent"];document.querySelectorAll(".star").forEach((s,i)=>{s.onclick=()=>{r=i+1;document.querySelectorAll(".star").forEach((x,j)=>x.classList.toggle("active",j<=i));txt.innerHTML="Rating: <b>"+r+"/5</b> ("+names[i]+")";};});function submitRating(){if(!r){alert("Please select a rating.");return;}localStorage.setItem("rating",r);msg.innerHTML="Thank you! Redirecting...";setTimeout(()=>location.href="certificate.html",1200);}</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mission Evaluation</title>
+<style>
+body{
+margin:0;
+font-family:Arial,Helvetica,sans-serif;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+color:#fff;
+background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url("wallpaper2.jpg") center/cover no-repeat;
+}
+.card{
+width:min(850px,92%);
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(12px);
+border-radius:20px;
+padding:35px;
+box-shadow:0 10px 35px rgba(0,0,0,.45);
+text-align:center;
+}
+.progress{
+margin:15px 0 30px;
+font-size:18px;
+line-height:2;
+}
+.done{color:#4ade80;font-weight:bold;}
+.current{color:#facc15;font-weight:bold;}
+h1{margin-bottom:5px;}
+h2{color:#facc15;margin-top:5px;}
+.panel{
+background:rgba(0,0,0,.25);
+border-radius:15px;
+padding:20px;
+margin:25px 0;
+}
+.stars{
+font-size:64px;
+margin:20px 0;
+}
+.star{
+cursor:pointer;
+color:#666;
+transition:.2s;
+padding:0 5px;
+}
+.star:hover{
+transform:scale(1.15);
+}
+.active{
+color:#ffd700;
+}
+#ratingText{
+font-size:22px;
+min-height:30px;
+}
+button{
+margin-top:25px;
+padding:14px 30px;
+font-size:18px;
+font-weight:bold;
+background:#22c55e;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+button:hover{
+background:#16a34a;
+}
+#message{
+margin-top:20px;
+font-size:18px;
+color:#4ade80;
+}
+.footer{
+margin-top:25px;
+opacity:.85;
+font-style:italic;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+<h1>🏁 MISSION SUCCESSFUL</h1>
+<h2>ART Engineering Challenge</h2>
+
+<div class="progress">
+<span class="done">✔ Intro</span> →
+<span class="done">✔ Level 1</span> →
+<span class="done">✔ Level 2</span> →
+<span class="done">✔ Level 3</span> →
+<span class="done">✔ Level 4</span><br>
+<span class="current">⭐ Experience Rating</span> →
+Engineering Debrief →
+🏆 Certificate
+</div>
+
+<div class="panel">
+
+<h2>Mission Evaluation</h2>
+
+<p>
+Congratulations,
+<strong id="player"></strong>!
+<br><br>
+The ART has successfully completed all engineering inspections.
+Before your Engineering Certificate is issued, please evaluate your mission experience.
+</p>
+
+<div class="stars">
+<span class="star" data-value="1">&#9733;</span>
+<span class="star" data-value="2">&#9733;</span>
+<span class="star" data-value="3">&#9733;</span>
+<span class="star" data-value="4">&#9733;</span>
+<span class="star" data-value="5">&#9733;</span>
+</div>
+
+<div id="ratingText">Select your rating.</div>
+
+<button onclick="submitRating()">📝 Continue to Engineering Debrief</button>
+
+<div id="message"></div>
+
+</div>
+
+<div class="footer">
+Thank you for participating in the ART Engineering Challenge.
+</div>
+
+</div>
+
+<script>
+document.getElementById("player").textContent =
+localStorage.getItem("playerName") || "Engineer";
+
+const descriptions=[
+"Very Poor",
+"Poor",
+"Good",
+"Very Good",
+"Excellent"
+];
+
+let rating=0;
+
+document.querySelectorAll(".star").forEach((star,index)=>{
+
+star.addEventListener("click",()=>{
+
+rating=index+1;
+
+document.querySelectorAll(".star").forEach((s,i)=>{
+s.classList.toggle("active",i<=index);
+});
+
+document.getElementById("ratingText").innerHTML=
+`Rating: <strong>${rating}/5</strong> (${descriptions[index]})`;
+
+});
+
+});
+
+function submitRating(){
+
+if(rating===0){
+
+alert("Please select a rating before continuing.");
+
+return;
+
+}
+
+localStorage.setItem("rating",rating);
+
+document.getElementById("message").innerHTML=
+"✅ Thank you! Opening the Engineering Debrief...";
+
+setTimeout(()=>{
+window.location.href="reflection.html";
+},1200);
+
+}
+</script>
+
+</body>
+</html>
